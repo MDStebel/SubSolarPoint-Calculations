@@ -1,2 +1,2 @@
 # Astronomical
-Astronomical computations
+Astronomical computation playgrounds
