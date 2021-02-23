@@ -1,6 +1,5 @@
-//: Various Astronomical Computations to Determine the Subsolar point coordinates
+//: Playground - Compute the subsolar point coordinates
 import Foundation
-
 
 /// Static struct used as a namespace to hold global variables and constants
 struct Globals {
@@ -13,13 +12,15 @@ struct Globals {
     static let numberOfDaysInAYear: Float                   = 365
     static let numberOfDaysInCentury: Double                = 36525
     
-    static let numberOfSecondsInADay: Float                 = numberOfSecondsInAnHour * numberOfHoursInADay
+    static let numberOfSecondsInADay: Float                 = 86400
     static let numberOfHoursInADay: Float                   = 24
     static let numberOfSecondsInAnHour: Float               = 3600
     static let numberOfMinutesInAnHour: Float               = 60
     static let numberOfSecondsInAMinute : Float             = 60
     static let noonTime: Float                              = 12
+    static let oneEightyDegrees: Float                      = 180
     static let radiansToDegrees: Float                      = 1 / degreesToRadians
+    static let threeSixtyDegrees: Float                     = 360
 
 }
 
@@ -44,7 +45,7 @@ struct CoordinateConversions {
         
         var longSeconds = Int(longitude * Double(Globals.numberOfSecondsInAnHour))
         let longDegrees = longSeconds / Int(Globals.numberOfSecondsInAnHour)
-        longSeconds     = abs(longSeconds % 3600)
+        longSeconds     = abs(longSeconds % Int(Globals.numberOfSecondsInAnHour))
         let longMinutes = longSeconds / Int(Globals.numberOfSecondsInAMinute)
         longSeconds %= Int(Globals.numberOfSecondsInAMinute)
         
@@ -64,7 +65,7 @@ struct CoordinateConversions {
         
         let sign = (direction == "S" || direction == "W") ? -1.0 : 1.0
         
-        return (degrees + (minutes + seconds / 60.0) / 60.0) * sign
+        return (degrees + (minutes + seconds / Double(Globals.numberOfSecondsInAMinute)) / Double(Globals.numberOfSecondsInAMinute)) * sign
         
     }
     
@@ -78,37 +79,39 @@ struct CoordinateConversions {
 func jdFromDate(date: Date) -> Double {
     
     let JD_JAN_1_1970_0000GMT = 2440587.5
-    let jD = JD_JAN_1_1970_0000GMT + date.timeIntervalSince1970 / 86400.0
+    let jD = JD_JAN_1_1970_0000GMT + date.timeIntervalSince1970 / Double(Globals.numberOfSecondsInADay)
 
     return jD
 
 }
 
-//
-//func dateFromJd(jd : Double) -> NSDate {
-//    let JD_JAN_1_1970_0000GMT = 2440587.5
-//    return  NSDate(timeIntervalSince1970: (jd - JD_JAN_1_1970_0000GMT) * 86400)
-//}
+
+func dateFromJd(jd : Double) -> NSDate {
+    
+    let JD_JAN_1_1970_0000GMT = 2440587.5
+    return  NSDate(timeIntervalSince1970: (jd - JD_JAN_1_1970_0000GMT) * Double(Globals.numberOfSecondsInADay))
+    
+}
 
 
 public func julianCenturySinceJan2000(date: Date) -> Double {
     
     let now = Date()
-    let jc = (jdFromDate(date: now) - 2451545) / Globals.numberOfDaysInCentury
+    let jc = (jdFromDate(date: now) - 2451545) / Double(Globals.numberOfDaysInCentury)
     
     return jc
     
 }
 
 
-//public func sunEquationOfCenter(t: Double) -> Double {
-//
-//    let m = ((357.52911 + t * (35999.05029 - t * 0.0001537))) // Sun geometric mean anomaly
-//    let cInRadians = sin(m * Double(Globals.degreesToRadians)) * (1.914602 - t * (0.004817 + 0.000014 * t)) + sin(2 * m * Double(Globals.degreesToRadians)) * (0.019993 - 0.000101 * t) + sin(3 * m * Double(Globals.degreesToRadians)) * 0.000289
-//
-//    return cInRadians
-//
-//}
+public func sunEquationOfCenter(t: Double) -> Double {
+
+    let m = ((357.52911 + t * (35999.05029 - t * 0.0001537))) // Sun geometric mean anomaly
+    let cInRadians = sin(m * Double(Globals.degreesToRadians)) * (1.914602 - t * (0.004817 + 0.000014 * t)) + sin(2 * m * Double(Globals.degreesToRadians)) * (0.019993 - 0.000101 * t) + sin(3 * m * Double(Globals.degreesToRadians)) * 0.000289
+
+    return cInRadians
+
+}
 
 
 /// Calculate the mean longitude of the Sun at the current time
@@ -119,7 +122,7 @@ public func getGeometricMeanLongitudeOfSunAtCurrentTime() -> Float {
 
     let julianCentury = julianCenturySinceJan2000(date: now)
 
-    let sunLongitude = Float((280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032))).truncatingRemainder(dividingBy: 360.0)
+    let sunLongitude = Float((280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032))).truncatingRemainder(dividingBy: Globals.threeSixtyDegrees)
     
     return Float(sunLongitude)
     
@@ -174,17 +177,17 @@ func subSolarLongitudeOfSunAtCurrentTime() -> Float {
     let subSolarLon = noonHourDisplacement * Globals.degreesLongitudePerHour
     
     // Now, determine if we've crossed the international date line. If so, we need to add 180 degrees.
-    if subSolarLon < -180 && GMT <= Globals.noonTime {
-        lonCorrection = 180
-    } else if subSolarLon < -180 && GMT >= Globals.noonTime {
-        lonCorrection = localHour >= GMT ? 0 : 180
+    if subSolarLon < -Globals.oneEightyDegrees && GMT <= Globals.noonTime {
+        lonCorrection = Globals.oneEightyDegrees
+    } else if subSolarLon < -Globals.oneEightyDegrees && GMT >= Globals.noonTime {
+        lonCorrection = localHour >= GMT ? 0 : Globals.oneEightyDegrees
     } else if GMT >= Globals.numberOfHoursInADay {
-        lonCorrection = 180
+        lonCorrection = Globals.oneEightyDegrees
     } else {
         lonCorrection = 0
     }
-
-    return subSolarLon.truncatingRemainder(dividingBy: 180) + lonCorrection
+    
+    return subSolarLon.truncatingRemainder(dividingBy: Globals.oneEightyDegrees) + lonCorrection
     
 }
 
