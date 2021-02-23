@@ -17,7 +17,7 @@ struct Globals {
     static let numberOfHoursInADay: Float                   = 24
     static let numberOfSecondsInAnHour: Float               = 3600
     static let numberOfMinutesInAnHour: Float               = 60
-    static let numberofSecondsInAMinute : Float             = 60
+    static let numberOfSecondsInAMinute : Float             = 60
     static let noonTime: Float                              = 12
     static let radiansToDegrees: Float                      = 1 / degreesToRadians
 
@@ -39,14 +39,14 @@ struct CoordinateConversions {
         var latSeconds  = Int(latitude * Double(Globals.numberOfSecondsInAnHour))
         let latDegrees  = latSeconds / Int(Globals.numberOfSecondsInAnHour)
         latSeconds      = abs(latSeconds % Int(Globals.numberOfSecondsInAnHour))
-        let latMinutes  = latSeconds / Int(Globals.numberofSecondsInAMinute)
-        latSeconds %= Int(Globals.numberofSecondsInAMinute)
+        let latMinutes  = latSeconds / Int(Globals.numberOfSecondsInAMinute)
+        latSeconds %= Int(Globals.numberOfSecondsInAMinute)
         
         var longSeconds = Int(longitude * Double(Globals.numberOfSecondsInAnHour))
         let longDegrees = longSeconds / Int(Globals.numberOfSecondsInAnHour)
         longSeconds     = abs(longSeconds % 3600)
-        let longMinutes = longSeconds / Int(Globals.numberofSecondsInAMinute)
-        longSeconds %= Int(Globals.numberofSecondsInAMinute)
+        let longMinutes = longSeconds / Int(Globals.numberOfSecondsInAMinute)
+        longSeconds %= Int(Globals.numberOfSecondsInAMinute)
         
         return String(format: format, abs(latDegrees), latMinutes, {return latDegrees >= 0 ? "North" : "South"}(), abs(longDegrees), longMinutes, {return longDegrees >= 0 ? "East" : "West"}())
         
