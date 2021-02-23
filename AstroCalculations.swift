@@ -11,7 +11,6 @@ struct Globals {
     static let earthTiltInRadians: Float                    = earthTiltInDegrees * degreesToRadians
     static let numberOfDaysInAYear: Float                   = 365
     static let numberOfDaysInCentury: Double                = 36525
-    
     static let numberOfSecondsInADay: Float                 = 86400
     static let numberOfHoursInADay: Float                   = 24
     static let numberOfSecondsInAnHour: Float               = 3600
