@@ -292,10 +292,11 @@ func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
 }
 
 
-// Test it
+// Run it
 let now = Date()
-let lat = Double(getSubSolarCoordinates().latitude)
-let lon = Double(getSubSolarCoordinates().longitude)
+let tuple = getSubSolarCoordinates()
+let lat = Double(tuple.latitude)
+let lon = Double(tuple.longitude)
 let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Globals.coordinatesStringFormat)
 
 print("The subsoloar point is at: \(coordinates)")
