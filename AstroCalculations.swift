@@ -1,4 +1,4 @@
-//: Playground - Compute the subsolar point coordinates
+//: Playground - Compute the subsolar point coordinates 
 import Foundation
 
 
