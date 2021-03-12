@@ -1,31 +1,31 @@
-//: Playground - Compute the subsolar point coordinates 
+//: Playground - Compute the subsolar point coordinates
 import Foundation
 
 
 /// Variables and constants used by this playground
 struct Constants {
-
-    static let coordinatesStringFormat         = "%3d° %02d' %@  %3d° %02d' %@"
-    static let degreesLongitudePerHour: Float  = 15
-    static let degreesToRadians: Float         = 0.01745329252
-    static let earthTiltInDegrees: Float       = 23.43715
-    static let earthTiltInRadians: Float       = 0.40905543478
-    static let julianDateForJan011970At0000GMT = 2440587.5
-    static let numberOfDaysInAYear: Float      = 365
-    static let numberOfDaysInACentury: Float   = 36525
-    static let numberOfHoursInADay: Float      = 24
-    static let numberOfMinutesInADay: Float    = 1440
-    static let numberOfMinutesInAnHour: Float  = 60
-    static let numberOfMinutesInAYear: Float   = numberOfDaysInAYear * numberOfMinutesInADay
-    static let numberOfSecondsInADay: Float    = 86400
-    static let numberOfSecondsInAnHour: Float  = 3600
-    static let numberOfSecondsInAMinute: Float = 60
-    static let numberOfSecondsInAYear: Float   = numberOfSecondsInADay * numberOfDaysInAYear
-    static let noonTime: Float                 = 12
-    static let oneEightyDegrees: Float         = 180
-    static let radiansToDegrees: Float         = 57.2957795131
-    static let threeSixtyDegrees: Float        = 360
-
+    
+    static let coordinatesStringFormat          = "%3d° %02d' %@  %3d° %02d' %@"
+    static let degreesLongitudePerHour: Double  = 15
+    static let degreesToRadians: Double         = 0.01745329252
+    static let earthTiltInDegrees: Double       = 23.43715
+    static let earthTiltInRadians: Double       = 0.40905543478
+    static let julianDateForJan011970At0000GMT  = 2440587.5
+    static let numberOfDaysInAYear: Double      = 365
+    static let numberOfDaysInACentury: Double   = 36525
+    static let numberOfHoursInADay: Double      = 24
+    static let numberOfMinutesInADay: Double    = 1440
+    static let numberOfMinutesInAnHour: Double  = 60
+    static let numberOfMinutesInAYear: Double   = numberOfDaysInAYear * numberOfMinutesInADay
+    static let numberOfSecondsInADay: Double    = 86400
+    static let numberOfSecondsInAnHour: Double  = 3600
+    static let numberOfSecondsInAMinute: Double = 60
+    static let numberOfSecondsInAYear: Double   = numberOfSecondsInADay * numberOfDaysInAYear
+    static let noonTime: Double                 = 12
+    static let oneEightyDegrees: Double         = 180
+    static let radiansToDegrees: Double         = 57.2957795131
+    static let threeSixtyDegrees: Double        = 360
+    
 }
 
 /// Format converters for coordinates
@@ -37,7 +37,7 @@ struct CoordinateConversions {
     /// - Parameters:
     ///   - latitude: Latitude as a Double
     ///   - longitude: Longitude as a Double
-    ///   - format: String containing the format to use in the conversion
+    ///   - format: The format to use in the conversion as a String
     /// - Returns: The coordinates string in deg min sec format
     static func decimalCoordinatesToDegMinSec(latitude: Double, longitude: Double, format: String) -> String {
         
@@ -45,13 +45,13 @@ struct CoordinateConversions {
         let latDegrees  = latSeconds / Int(Constants.numberOfSecondsInAnHour)
         latSeconds      = abs(latSeconds % Int(Constants.numberOfSecondsInAnHour))
         let latMinutes  = latSeconds / Int(Constants.numberOfSecondsInAMinute)
-        latSeconds %= Int(Constants.numberOfSecondsInAMinute)
+        latSeconds      %= Int(Constants.numberOfSecondsInAMinute)
         
         var longSeconds = Int(longitude * Double(Constants.numberOfSecondsInAnHour))
         let longDegrees = longSeconds / Int(Constants.numberOfSecondsInAnHour)
         longSeconds     = abs(longSeconds % Int(Constants.numberOfSecondsInAnHour))
         let longMinutes = longSeconds / Int(Constants.numberOfSecondsInAMinute)
-        longSeconds %= Int(Constants.numberOfSecondsInAMinute)
+        longSeconds     %= Int(Constants.numberOfSecondsInAMinute)
         
         return String(format: format, abs(latDegrees), latMinutes, {return latDegrees >= 0 ? "North" : "South"}(), abs(longDegrees), longMinutes, {return longDegrees >= 0 ? "East" : "West"}())
         
@@ -77,7 +77,7 @@ struct CoordinateConversions {
 
 
 /// Convert a given Gregorian date to a Julian date
-/// - Parameter date: Gregorian date to convert
+/// - Parameter date: Gregorian date to convert as a Date
 /// - Returns: Julian date as a Double
 func jDFromDate(date: Date) -> Double {
     
@@ -89,7 +89,7 @@ func jDFromDate(date: Date) -> Double {
 
 
 /// Convert a given Julian date to a Gregorian date
-/// - Parameter jd: Julian date
+/// - Parameter jd: Julian date as a Double
 /// - Returns: Standard date as a NSDate
 func dateFromJd(jd : Double) -> NSDate {
     
@@ -115,7 +115,7 @@ func julianCenturySinceJan2000(date: Date) -> Double {
 /// Calculate the orbital eccentricity of the Earth
 ///
 /// The orbital eccentricity of an astronomical object is a dimensionless parameter that determines the amount by which its orbit around another body deviates from a perfect circle.
-/// - Parameter t: Julian century
+/// - Parameter t: Julian century as a Double
 /// - Returns: Eccentricity as a Double
 func orbitEccentricityOfEarth(t: Double) -> Double {
     
@@ -132,7 +132,7 @@ func orbitEccentricityOfEarth(t: Double) -> Double {
 /// If the orbit of the planet were a perfect circle, then the planet as seen from the Sun would move along its orbit at a fixed speed.
 /// Then it would be simple to calculate its position (and also the position of the Sun as seen from the planet).
 /// The position that the planet would have relative to its perihelion if the orbit of the planet were a circle is called the mean anomaly.
-/// - Parameter t: Julian century
+/// - Parameter t: Julian century as a Double
 /// - Returns: The mean anomaly as a Double
 func meanAnomaly(t: Double) -> Double {
     
@@ -153,18 +153,18 @@ func equationOfTime(for date: Date) -> Double {
     
     let vary, ecc, part1, part2, part3, part4, part5: Double
     
-    let t = julianCenturySinceJan2000(date: date)
-    vary = 0.0430264916545165
-    let meanGInRadians = Double(geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Constants.degreesToRadians)
-    let meanAInRadians = Double(meanAnomaly(t: t) * Double(Constants.degreesToRadians))
-    ecc = orbitEccentricityOfEarth(t: t)
+    let t              = julianCenturySinceJan2000(date: date)
+    let meanGInRadians = geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Double(Constants.degreesToRadians)
+    let meanAInRadians = meanAnomaly(t: t) * Double(Constants.degreesToRadians)
+    vary               = 0.0430264916545165
+    ecc                = orbitEccentricityOfEarth(t: t)
     
-    part1 = vary * sin(2 * meanGInRadians)
-    part2 = 2 * ecc * sin(meanAInRadians)
-    part3 = 4 * ecc * vary * sin(meanAInRadians) * cos(2 * meanGInRadians)
-    part4 = 0.5 * vary * vary * sin(4 * meanGInRadians)
-    part5 = 1.25 * ecc * ecc * sin(2 * meanAInRadians)
-    let eOT = 4 * (part1 - part2 + part3 - part4 - part5) * Double(Constants.radiansToDegrees)
+    part1              = vary * sin(2 * meanGInRadians)
+    part2              = 2 * ecc * sin(meanAInRadians)
+    part3              = 4 * ecc * vary * sin(meanAInRadians) * cos(2 * meanGInRadians)
+    part4              = 0.5 * vary * vary * sin(4 * meanGInRadians)
+    part5              = 1.25 * ecc * ecc * sin(2 * meanAInRadians)
+    let eOT            = 4 * (part1 - part2 + part3 - part4 - part5) * Double(Constants.radiansToDegrees)
     
     return eOT
     
@@ -176,7 +176,7 @@ func equationOfTime(for date: Date) -> Double {
 /// The orbits of the planets are not perfect circles but rather ellipses, so the speed of the planet in its orbit varies, and therefore the apparent speed of the Sun along the ecliptic also varies throughout the planet's year.
 /// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun. For a circular orbit, the mean anomaly and the true anomaly are the same.
 /// The difference between the true anomaly and the mean anomaly is called the Equation of Center.
-/// - Parameter t: Julian century
+/// - Parameter t: Julian century as a Double
 /// - Returns: The Sun equation of Center in radians
 func sunEquationOfCenter(t: Double) -> Double {
     
@@ -192,11 +192,11 @@ func sunEquationOfCenter(t: Double) -> Double {
 ///
 /// The mean longitude of the Sun, corrected for the aberration of light. Mean longitude is the ecliptic longitude at which an orbiting body could be found if its orbit were circular and free of perturbations.
 /// While nominally a simple longitude, in practice the mean longitude does not correspond to any one physical angle.
-/// - Parameter t: Julian century
-/// - Returns: The geometric mean longitude in degrees as a Float
-func geometricMeanLongitudeOfSunAtCurrentTime(t: Double) -> Float {
+/// - Parameter t: Julian century as a Double
+/// - Returns: The geometric mean longitude in degrees as a Double
+func geometricMeanLongitudeOfSunAtCurrentTime(t: Double) -> Double {
     
-    let sunGeometricMeanLongitude = Float(280.46646 + t * 36000.76983 + t * t * 0.0003032).truncatingRemainder(dividingBy: Constants.threeSixtyDegrees)
+    let sunGeometricMeanLongitude = Double(280.46646 + t * 36000.76983 + t * t * 0.0003032).truncatingRemainder(dividingBy: Constants.threeSixtyDegrees)
     
     return sunGeometricMeanLongitude
     
@@ -207,14 +207,14 @@ func geometricMeanLongitudeOfSunAtCurrentTime(t: Double) -> Float {
 ///
 /// Based on the geometric mean longitude of the Sun.
 /// - Parameter date: A date as a Date type
-/// - Returns: Latitude in degrees as a Float
-func latitudeOfSun(for date: Date) -> Float {
+/// - Returns: Latitude in degrees as a Double
+func latitudeOfSun(for date: Date) -> Double {
     
-    let jC = julianCenturySinceJan2000(date: date)
+    let jC                       = julianCenturySinceJan2000(date: date)
     
-    let geomMeanLongitude = geometricMeanLongitudeOfSunAtCurrentTime(t: jC)
-    let sunTrueLongitude = geomMeanLongitude + Float(sunEquationOfCenter(t: jC))
-    let latitudeOfSun = asin(sin(sunTrueLongitude * Constants.degreesToRadians) * sin(Constants.earthTiltInRadians))
+    let geomMeanLongitude        = geometricMeanLongitudeOfSunAtCurrentTime(t: jC)
+    let sunTrueLongitude         = geomMeanLongitude + Double(sunEquationOfCenter(t: jC))
+    let latitudeOfSun            = asin(sin(sunTrueLongitude * Constants.degreesToRadians) * sin(Constants.earthTiltInRadians))
     let sunTrueLatitudeInRadians = latitudeOfSun * Constants.radiansToDegrees
     
     return sunTrueLatitudeInRadians
@@ -227,34 +227,33 @@ func latitudeOfSun(for date: Date) -> Float {
 /// This is an original algorithm that I based on a given date and the equation of time. This is partially empirical and uses the difference between local and GMT time to determine roughly where noon is.
 /// The algorithm then corrects this based on the equation of time and whether the Sun is east or west of the International Date Line.
 /// - Parameter date: A date as a Date type
-/// - Returns: The subsolar longitude as a Float
-func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Float {
+/// - Returns: The subsolar longitude as a Double
+func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
     
-    var timeCorrection: Float
-    var dayCorrection: Float
-    var lonCorrection: Float
+    var timeCorrection, dayCorrection, lonCorrection: Double
     
     // Time calculations for the current time
-    let now = Date()
-    let eOT = Float(equationOfTime(for: now))
-    let localMins = Float(Calendar.current.component(.minute, from: now))
-    let localHour = Float(Calendar.current.component(.hour, from: now)) + localMins / Constants.numberOfMinutesInAnHour   // The current time as a decimal value
-    let secondsFromGMT = Float(TimeZone.current.secondsFromGMT())
+    let now            = Date()
+    let eOT            = Double(equationOfTime(for: now))
+    let localMins      = Double(Calendar.current.component(.minute, from: now))
+    let localHour      = Double(Calendar.current.component(.hour, from: now)) + localMins / Constants.numberOfMinutesInAnHour   // The current time as a decimal value
+    let secondsFromGMT = Double(TimeZone.current.secondsFromGMT())
+    //    let daylightSavingsTimeOffset = Double(TimeZone.current.daylightSavingTimeOffset())
     
     // Correct for time and day relative to GMT and the International Date Line
     if secondsFromGMT < 0 {
         timeCorrection = 1
-        dayCorrection = 0
+        dayCorrection  = 0
     } else {
         timeCorrection = -1
-        dayCorrection = -Constants.numberOfHoursInADay
+        dayCorrection  = -Constants.numberOfHoursInADay
     }
     
-    // Calculate GMT
-    let GMT = localHour - secondsFromGMT / Constants.numberOfSecondsInAnHour - timeCorrection * Constants.numberOfHoursInADay.truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
+    // Calculate current GMT
+    let GMT = (localHour - secondsFromGMT / Constants.numberOfSecondsInAnHour - timeCorrection * Constants.numberOfHoursInADay.truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)).truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
     
     // Now, calculate the difference between current GMT and noontime in hours
-    let noonHourDelta = Constants.noonTime - GMT + dayCorrection
+    let noonHourDelta = Constants.noonTime - GMT - eOT / Constants.numberOfMinutesInAnHour + dayCorrection
     
     // The subsolar longitude is the difference in hours times the number of degrees per hour (360/24 = 15 deg/hr)
     let subSolarLon = noonHourDelta * Constants.degreesLongitudePerHour
@@ -264,13 +263,15 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Float {
         lonCorrection = Constants.oneEightyDegrees
     } else if subSolarLon < -Constants.oneEightyDegrees && GMT >= Constants.noonTime {
         lonCorrection = localHour >= GMT ? 0 : Constants.oneEightyDegrees
+    } else if subSolarLon > Constants.oneEightyDegrees {
+        lonCorrection = -subSolarLon - -179.99       // Keeps longitude <= 180 in case of a rounding error
     } else if GMT >= Constants.numberOfHoursInADay {
         lonCorrection = Constants.oneEightyDegrees
     } else {
         lonCorrection = 0
     }
     
-    let subSolarLongitudeActual = Float((noonHourDelta * Constants.numberOfMinutesInAnHour - eOT) / (Constants.numberOfMinutesInADay) * Constants.threeSixtyDegrees).truncatingRemainder(dividingBy: Constants.oneEightyDegrees) + lonCorrection
+    let subSolarLongitudeActual = subSolarLon + lonCorrection
     
     return subSolarLongitudeActual
     
@@ -280,23 +281,23 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Float {
 /// Get the subsolar coordinates at the current date and time
 ///
 /// The subsolar point is the position on Earth where the Sun is at the zenith.
-/// - Returns: The subsolar coordinates as a tuple of Floats
+/// - Returns: The subsolar coordinates as a tuple of Doubles
 func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
     
     let now = Date()
-    let lat = latitudeOfSun(for: now)
-    let lon = subSolarLongitudeOfSunAtCurrentTime(for: now)
+    let lat = Float(latitudeOfSun(for: now))
+    let lon = Float(subSolarLongitudeOfSunAtCurrentTime(for: now))
     
     return (lat, lon)
     
 }
 
 
-// Run it
-let now = Date()
-let tuple = getSubSolarCoordinates()
-let lat = Double(tuple.latitude)
-let lon = Double(tuple.longitude)
+// Test it
+let now         = Date()
+let tuple       = getSubSolarCoordinates()
+let lat         = Double(tuple.latitude)
+let lon         = Double(tuple.longitude)
 let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
 
 print("The subsoloar point is at: \(coordinates)")
