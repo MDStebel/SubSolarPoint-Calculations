@@ -241,7 +241,7 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
     //    let daylightSavingsTimeOffset = Double(TimeZone.current.daylightSavingTimeOffset())
     
     // Correct for time and day relative to GMT and the International Date Line
-    if secondsFromGMT < 0 {
+    if secondsFromGMT <= 0 {
         timeCorrection = 1
         dayCorrection  = 0
     } else {
@@ -253,7 +253,7 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
     let GMT = (localHour - secondsFromGMT / Constants.numberOfSecondsInAnHour - timeCorrection * Constants.numberOfHoursInADay.truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)).truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
     
     // Now, calculate the difference between current GMT and noontime in hours
-    let noonHourDelta = min(Constants.noonTime - GMT - eOT / Constants.numberOfMinutesInAnHour + dayCorrection, 12.0) // Force to <= 12
+    let noonHourDelta = min(Constants.noonTime - GMT - eOT / Constants.numberOfMinutesInAnHour + dayCorrection, 12.0).truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
     
     // The subsolar longitude is the difference in hours times the number of degrees per hour (360/24 = 15 deg/hr)
     let subSolarLon = noonHourDelta * Constants.degreesLongitudePerHour
