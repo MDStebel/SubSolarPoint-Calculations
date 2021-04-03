@@ -215,9 +215,9 @@ func latitudeOfSun(for date: Date) -> Double {
     let geomMeanLongitude        = geometricMeanLongitudeOfSunAtCurrentTime(t: jC)
     let sunTrueLongitude         = geomMeanLongitude + Double(sunEquationOfCenter(t: jC))
     let latitudeOfSun            = asin(sin(sunTrueLongitude * Constants.degreesToRadians) * sin(Constants.earthTiltInRadians))
-    let sunTrueLatitudeInRadians = latitudeOfSun * Constants.radiansToDegrees
+    let sunTrueLatitudeInDegrees = latitudeOfSun * Constants.radiansToDegrees
     
-    return sunTrueLatitudeInRadians
+    return sunTrueLatitudeInDegrees
     
 }
 
