@@ -1,4 +1,4 @@
-//: Playground - Compute the subsolar point coordinates
+//: ## Playground - Compute the subsolar point coordinates
 import Foundation
 
 
@@ -28,12 +28,13 @@ struct Constants {
     
 }
 
+
 /// Format converters for coordinates
 struct CoordinateConversions {
     
     /// Convert coordinates from decimal to degrees, minutes, seconds, and direction
     ///
-    /// This is a format conversion
+    /// This is a format conversion only.
     /// - Parameters:
     ///   - latitude: Latitude as a Double
     ///   - longitude: Longitude as a Double
@@ -59,6 +60,8 @@ struct CoordinateConversions {
     
     
     /// Convert coordinates from degrees, minutes, seconds, and direction to decimal
+    ///
+    /// This is a format conversion only.
     /// - Parameters:
     ///   - degrees: Degrees as a Double
     ///   - minutes: Minutes as a Double
@@ -238,7 +241,6 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
     let localMins      = Double(Calendar.current.component(.minute, from: now))
     let localHour      = Double(Calendar.current.component(.hour, from: now)) + localMins / Constants.numberOfMinutesInAnHour   // The current time as a decimal value
     let secondsFromGMT = Double(TimeZone.current.secondsFromGMT())
-    //    let daylightSavingsTimeOffset = Double(TimeZone.current.daylightSavingTimeOffset())
     
     // Correct for time and day relative to GMT and the International Date Line
     if secondsFromGMT <= 0 {
@@ -298,4 +300,4 @@ let lat         = Double(tuple.latitude)
 let lon         = Double(tuple.longitude)
 let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
 
-print("The subsoloar point is at: \(coordinates)")
+print("The subsoloar point is at: \(coordinates) at \(now)")
