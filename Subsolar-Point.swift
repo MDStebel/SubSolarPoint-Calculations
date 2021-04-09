@@ -236,10 +236,9 @@ func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
     var timeCorrection, dayCorrection, lonCorrection: Double
     
     // Time calculations for the current time
-    let now            = Date()
-    let eOT            = Double(equationOfTime(for: now))
-    let localMins      = Double(Calendar.current.component(.minute, from: now))
-    let localHour      = Double(Calendar.current.component(.hour, from: now)) + localMins / Constants.numberOfMinutesInAnHour   // The current time as a decimal value
+    let eOT            = Double(equationOfTime(for: date))
+    let localMins      = Double(Calendar.current.component(.minute, from: date))
+    let localHour      = Double(Calendar.current.component(.hour, from: date)) + localMins / Constants.numberOfMinutesInAnHour   // The current time as a decimal value
     let secondsFromGMT = Double(TimeZone.current.secondsFromGMT())
     
     // Correct for time and day relative to GMT and the International Date Line
