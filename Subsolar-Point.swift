@@ -292,7 +292,7 @@ func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
 }
 
 
-// Test it
+//: ### Test it
 let now         = Date()
 let tuple       = getSubSolarCoordinates()
 let lat         = Double(tuple.latitude)
