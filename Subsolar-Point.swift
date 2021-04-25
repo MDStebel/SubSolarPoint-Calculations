@@ -139,7 +139,7 @@ func orbitEccentricityOfEarth(t: Double) -> Double {
 /// - Returns: The mean anomaly as a Double
 func meanAnomaly(t: Double) -> Double {
     
-    let m = ((357.52911 + t * (35999.05029 - t * 0.0001537)))
+    let m = 357.52911 + t * 35999.05029 - t * 0.0001537
     
     return m
     
