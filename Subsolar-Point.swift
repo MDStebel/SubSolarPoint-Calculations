@@ -1,5 +1,6 @@
 //: ## Playground - Compute the subsolar point coordinates
 import Foundation
+import PlaygroundSupport
 
 
 /// Variables and constants used by this playground
@@ -291,12 +292,19 @@ func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
     
 }
 
-
 //: ### Test it
-let now         = Date()
-let tuple       = getSubSolarCoordinates()
-let lat         = Double(tuple.latitude)
-let lon         = Double(tuple.longitude)
-let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
+func delay(_ delayInSecs: Double, closure: @escaping () -> () ) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + delayInSecs, execute: closure)
+}
 
-print("The subsoloar point is at: \(coordinates) at \(now)")
+let secsToDelay: UInt32 = 300
+
+while true {
+    let now         = Date()
+    let tuple       = getSubSolarCoordinates()
+    let lat         = Double(tuple.latitude)
+    let lon         = Double(tuple.longitude)
+    let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
+    print("The subsoloar point is at: \(coordinates) at \(now)")
+    sleep(secsToDelay)
+}
