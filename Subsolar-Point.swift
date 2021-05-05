@@ -1,7 +1,7 @@
 //: ## Playground - Compute the subsolar point coordinates
-//: ####  As used in ISS Real-Time Tracker 3D
+//: #### As used in ISS Real-Time Tracker 3D
 //: #### Created by Michael Stebel on 02/26/2021.
-//: ####  Copyright © 2020-2021 Michael Stebel Consulting, LLC. All rights reserved.
+//: #### Copyright © 2020-2021 Michael Stebel Consulting, LLC. All rights reserved.
 
 import Foundation
 import PlaygroundSupport
@@ -315,4 +315,3 @@ while true {
     print("The subsoloar point is at: \(coordinates) at \(now)")
     sleep(secsToDelay)
 }
-
