@@ -1,5 +1,5 @@
 //: ## Playground - Compute the subsolar point coordinates
-//: #### As used in ISS Real-Time Tracker 3D
+//: #### Based on algorithms used in ISS Real-Time Tracker 3D
 //: #### Created by Michael Stebel on 02/26/2021.
 //: #### Copyright © 2020-2021 Michael Stebel Consulting, LLC. All rights reserved.
 
@@ -304,7 +304,7 @@ struct Astrocalculations {
 //    DispatchQueue.main.asyncAfter(deadline: .now() + delayInSecs, execute: closure)
 //}
 
-let secsToDelay: UInt32 = 300
+let secsToDelay: UInt32 = 120
 
 while true {
     let now         = Date()
