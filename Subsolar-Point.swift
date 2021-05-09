@@ -1,8 +1,7 @@
 //: ## Playground - Compute the subsolar point coordinates
-//: #### Based on algorithms used in ISS Real-Time Tracker 3D
+//: #### Based on algorithms used in ISS Real-Time Tracker 3D.
 //: #### Created by Michael Stebel on 02/26/2021.
-//: #### Copyright © 2020-2021 Michael Stebel Consulting, LLC. All rights reserved.
-
+//: #### Copyright © 2021 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
@@ -307,11 +306,11 @@ struct Astrocalculations {
 let secsToDelay: UInt32 = 120
 
 while true {
-    let now         = Date()
-    let tuple       = Astrocalculations.getSubSolarCoordinates()
-    let lat         = Double(tuple.latitude)
-    let lon         = Double(tuple.longitude)
-    let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
+    let now           = Date()
+    let subsolarPoint = Astrocalculations.getSubSolarCoordinates()
+    let lat           = Double(subsolarPoint.latitude)
+    let lon           = Double(subsolarPoint.longitude)
+    let coordinates   = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
     print("The subsoloar point is at: \(coordinates) at \(now)")
     sleep(secsToDelay)
 }
