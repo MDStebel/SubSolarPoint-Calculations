@@ -1,7 +1,7 @@
 //: ## Playground - Compute the subsolar point coordinates
-//: ##### Based on algorithms used in ISS Real-Time Tracker 3D.
-//: ##### Created by Michael Stebel on 02/26/2021.
-//: ##### Copyright © 2021 Michael Stebel Consulting, LLC. All rights reserved.
+//: ###### Based on algorithms used in ISS Real-Time Tracker 3D.
+//: ###### Created by Michael Stebel on 02/26/2021.
+//: ###### Copyright © 2021 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
@@ -155,7 +155,7 @@ struct Astrocalculations {
     /// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun. For a circular orbit, the mean anomaly and the true anomaly are the same.
     /// The difference between the true anomaly and the mean anomaly is called the Equation of Center.
     /// - Parameter t: Julian century as a Double
-    /// - Returns: The Sun equation of Center in radians
+        /// - Returns: The Sun equation of Center in radians
     static func sunEquationOfCenter(t: Double) -> Double {
         let m = meanAnomaly(t: t)
         let sEOC = sin(m * Double(Constants.degreesToRadians)) * (1.914602 - t * (0.004817 + 0.000014 * t)) + sin(2 * m * Double(Constants.degreesToRadians)) * (0.019993 - 0.000101 * t) + sin(3 * m * Double(Constants.degreesToRadians)) * 0.000289
@@ -227,8 +227,8 @@ struct Astrocalculations {
         // Now, determine if we've crossed the international date line. If so, we need to add 180 degrees.
         if subSolarLon < -Constants.oneEightyDegrees && GMT <= Constants.noonTime {
             lonCorrection = Constants.oneEightyDegrees
-        } else if subSolarLon < -Constants.oneEightyDegrees && GMT >= Constants.noonTime {
-            lonCorrection = localHour >= GMT ? 0 : Constants.oneEightyDegrees
+        } else if subSolarLon <= -Constants.oneEightyDegrees && GMT >= Constants.noonTime {
+            lonCorrection = 0                   //localHour >= GMT ? 0 : Constants.oneEightyDegrees
         } else if GMT >= Constants.numberOfHoursInADay {
             lonCorrection = Constants.oneEightyDegrees
         } else {
@@ -252,13 +252,8 @@ struct Astrocalculations {
         return (lat, lon)
     }
 }
-
 //: ### Run it in a loop
-// func delay(_ delayInSecs: Double, closure: @escaping () -> () ) {
-//    DispatchQueue.main.asyncAfter(deadline: .now() + delayInSecs, execute: closure)
-// }
-
-let secsToDelay: UInt32 = 15
+let secsToDelay: UInt32 = 5
 
 while true {
     let now = Date()
@@ -266,6 +261,6 @@ while true {
     let lat = Double(subsolarPoint.latitude)
     let lon = Double(subsolarPoint.longitude)
     let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
-    print("The subsoloar point is at: \(coordinates) at \(now)")
+    print("The subsoloar point is at: \(coordinates) (at \(now))")
     sleep(secsToDelay)
 }
