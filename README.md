@@ -2,4 +2,6 @@
 Astronomical computations in Swift and Python.
 
 ## Subsolar-Point
-Computes the subsolar point at the current time. This is basically the current location where the Sun is at the zenith. The code is based on that used in ISS Real-Time Tracker 3D.
+Computes the subsolar point at the current time. The subsolar point is the current location on the surface of the Earth where the Sun is at the zenith. This incorporates my proprietary algorithm for accurately computing the latitude and longitude of the subsolar point in real-time.
+
+The code is based on that which I use in ISS Real-Time Tracker 3D.
