@@ -1,7 +1,7 @@
 //: ## Playground - Compute the subsolar point coordinates
 //: ###### Based on algorithms used in ISS Real-Time Tracker 3D.
 //: ###### Created by Michael Stebel on 02/26/2021.
-//: ###### Copyright © 2021 Michael Stebel Consulting, LLC. All rights reserved.
+//: ###### Copyright © 2021-2022 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
@@ -46,13 +46,13 @@ struct CoordinateConversions {
         let latMinutes  = latSeconds / Int(Constants.numberOfSecondsInAMinute)
         latSeconds %= Int(Constants.numberOfSecondsInAMinute)
 
-        var longSeconds = Int(longitude * Double(Constants.numberOfSecondsInAnHour))
-        let longDegrees = longSeconds / Int(Constants.numberOfSecondsInAnHour)
-        longSeconds     = abs(longSeconds % Int(Constants.numberOfSecondsInAnHour))
-        let longMinutes = longSeconds / Int(Constants.numberOfSecondsInAMinute)
-        longSeconds %= Int(Constants.numberOfSecondsInAMinute)
+        var lonSeconds = Int(longitude * Double(Constants.numberOfSecondsInAnHour))
+        let lonDegrees = lonSeconds / Int(Constants.numberOfSecondsInAnHour)
+        lonSeconds     = abs(lonSeconds % Int(Constants.numberOfSecondsInAnHour))
+        let lonMinutes = lonSeconds / Int(Constants.numberOfSecondsInAMinute)
+        lonSeconds %= Int(Constants.numberOfSecondsInAMinute)
 
-        return String(format: format, abs(latDegrees), latMinutes, { latDegrees >= 0 ? "North" : "South" }(), abs(longDegrees), longMinutes, { longDegrees >= 0 ? "East" : "West" }())
+        return String(format: format, abs(latDegrees), latMinutes, { latDegrees >= 0 ? "North" : "South" }(), abs(lonDegrees), lonMinutes, { lonDegrees >= 0 ? "East" : "West" }())
     }
 
     /// Convert coordinates from degrees, minutes, seconds, and direction to decimal
@@ -256,11 +256,11 @@ struct Astrocalculations {
 let secsToDelay: UInt32 = 5
 
 while true {
-    let now = Date()
+    let now           = Date()
     let subsolarPoint = Astrocalculations.getSubSolarCoordinates()
-    let lat = Double(subsolarPoint.latitude)
-    let lon = Double(subsolarPoint.longitude)
-    let coordinates = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
+    let lat           = Double(subsolarPoint.latitude)
+    let lon           = Double(subsolarPoint.longitude)
+    let coordinates   = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
     print("The subsoloar point is at: \(coordinates) (at \(now))")
     sleep(secsToDelay)
 }
