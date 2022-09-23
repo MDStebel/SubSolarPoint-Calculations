@@ -1,7 +1,7 @@
 //: ## Playground - Compute the subsolar point coordinates
-//: ###### Based on algorithms used in ISS Real-Time Tracker 3D.
+//: ###### Based on code used in ISS Real-Time Tracker 3D.
 //: ###### Created by Michael Stebel on 02/26/2021.
-//: ###### Copyright © 2021-2022 Michael Stebel Consulting, LLC. All rights reserved.
+//: ###### Copyright © 2021-2022 ISS Real-Time Tracker. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
