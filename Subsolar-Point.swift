@@ -1,7 +1,7 @@
-//: ## Playground - Compute the subsolar point coordinates
-//: ###### Based on code used in ISS Real-Time Tracker 3D.
+//: ## Playground - Compute the Real-Time Subsolar Point Coordinates
+//: ###### Based on the algorithms used in ISS Real-Time Tracker 3D.
 //: ###### Created by Michael Stebel on 02/26/2021.
-//: ###### Copyright © 2021-2023 ISS Real-Time Tracker. All rights reserved.
+//: ###### Copyright © 2021-2024 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
@@ -110,7 +110,7 @@ struct Astrocalculations {
         return ecc
     }
 
-    /// Calculate the mean anomaly of the Sun for a given date
+    /// Calculate the Mean Anomaly of the Sun for a given date
     ///
     /// The mean anomaly is the angle between lines drawn from the Sun to the perihelion and to a point moving in the orbit at a uniform rate corresponding to the period of revolution of the planet.
     /// If the orbit of the planet were a perfect circle, then the planet as seen from the Sun would move along its orbit at a fixed speed.
@@ -124,32 +124,31 @@ struct Astrocalculations {
         return m
     }
 
-    /// Calculate the equation of time for a given date
+    /// Calculate the Equation of Time for a given date
     ///
     /// The equation of time (EOT) is a formula used in the process of converting between solar time and clock time to compensate for the earth's elliptical orbit around the sun and its axial tilt.
     /// Essentially, the earth does not move perfectly smoothly in a perfectly circular orbit, so the EOT adjusts for that.
     /// - Parameter date: A date as a Date type
     /// - Returns: Equation of time in minutes as a Double
     static func equationOfTime(for date: Date) -> Double {
-        let vary, ecc, part1, part2, part3, part4, part5: Double
-
         let t = julianCenturySinceJan2000(date: date)
-        let meanGInRadians = geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Double(Constants.degreesToRadians)
-        let meanAInRadians = meanAnomaly(t: t) * Double(Constants.degreesToRadians)
-        vary = 0.0430264916545165
-        ecc = orbitEccentricityOfEarth(t: t)
-
-        part1 = vary * sin(2 * meanGInRadians)
-        part2 = 2 * ecc * sin(meanAInRadians)
-        part3 = 4 * ecc * vary * sin(meanAInRadians) * cos(2 * meanGInRadians)
-        part4 = 0.5 * vary * vary * sin(4 * meanGInRadians)
-        part5 = 1.25 * ecc * ecc * sin(2 * meanAInRadians)
-        let eOT = 4 * (part1 - part2 + part3 - part4 - part5) * Double(Constants.radiansToDegrees)
-
-        return eOT
+        let meanLongitudeSunRadians = geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Constants.degreesToRadians
+        let meanAnomalySunRadians = meanAnomaly(t: t) * Constants.degreesToRadians
+        let eccentricity = orbitEccentricityOfEarth(t: t)
+        let obliquity = 0.0430264916545165 // Earth's axial tilt
+        
+        let term1 = obliquity * sin(2 * meanLongitudeSunRadians)
+        let term2 = 2 * eccentricity * sin(meanAnomalySunRadians)
+        let term3 = 4 * eccentricity * obliquity * sin(meanAnomalySunRadians) * cos(2 * meanLongitudeSunRadians)
+        let term4 = 0.5 * obliquity * obliquity * sin(4 * meanLongitudeSunRadians)
+        let term5 = 1.25 * eccentricity * eccentricity * sin(2 * meanAnomalySunRadians)
+        
+        let equationOfTime = 4 * (term1 - term2 + term3 - term4 - term5) * Constants.radiansToDegrees
+        
+        return equationOfTime
     }
 
-    /// Calculate the Sun equation of Center
+    /// Calculate the Sun Equation of Center
     ///
     /// The orbits of the planets are not perfect circles but rather ellipses, so the speed of the planet in its orbit varies, and therefore the apparent speed of the Sun along the ecliptic also varies throughout the planet's year.
     /// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun. For a circular orbit, the mean anomaly and the true anomaly are the same.
@@ -163,7 +162,7 @@ struct Astrocalculations {
         return sEOC
     }
 
-    /// Calculate the geometric mean longitude of the Sun
+    /// Calculate the Geometric Mean Longitude of the Sun
     ///
     /// The mean longitude of the Sun, corrected for the aberration of light. Mean longitude is the ecliptic longitude at which an orbiting body could be found if its orbit were circular and free of perturbations.
     /// While nominally a simple longitude, in practice the mean longitude does not correspond to any one physical angle.
@@ -261,6 +260,6 @@ while true {
     let lat           = Double(subsolarPoint.latitude)
     let lon           = Double(subsolarPoint.longitude)
     let coordinates   = CoordinateConversions.decimalCoordinatesToDegMinSec(latitude: lat, longitude: lon, format: Constants.coordinatesStringFormat)
-    print("The subsoloar point is at: \(coordinates) (at \(now))")
+    print("The subsolar point is now at: \(coordinates) (at \(now))")
     sleep(secsToDelay)
 }
