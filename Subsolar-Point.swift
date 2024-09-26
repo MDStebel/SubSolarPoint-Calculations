@@ -1,5 +1,5 @@
 //: ## Playground - Compute the Real-Time Subsolar Point Coordinates
-//: ###### Based on the algorithms used in ISS Real-Time Tracker 3D.
+//: ###### Based on the algorithm used in ISS Real-Time Tracker 3D.
 //: ###### Created by Michael Stebel on 02/26/2021.
 //: ###### Copyright © 2021-2024 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
@@ -126,8 +126,8 @@ struct Astrocalculations {
 
     /// Calculate the Equation of Time for a given date
     ///
-    /// The equation of time (EOT) is a formula used in the process of converting between solar time and clock time to compensate for the earth's elliptical orbit around the sun and its axial tilt.
-    /// Essentially, the earth does not move perfectly smoothly in a perfectly circular orbit, so the EOT adjusts for that.
+    /// The Equation of Time (EOT) is a formula used to convert between solar time and clock time, accounting for the Earth’s elliptical orbit around the Sun and its axial tilt.
+    /// Essentially, the Earth does not move perfectly smoothly in a perfectly circular orbit, so the EOT adjusts for that.
     /// - Parameter date: A date as a Date type
     /// - Returns: Equation of time in minutes as a Double
     static func equationOfTime(for date: Date) -> Double {
@@ -150,7 +150,7 @@ struct Astrocalculations {
 
     /// Calculate the Sun Equation of Center
     ///
-    /// The orbits of the planets are not perfect circles but rather ellipses, so the speed of the planet in its orbit varies, and therefore the apparent speed of the Sun along the ecliptic also varies throughout the planet's year.
+    /// The orbits of the planets are not perfect circles, but rather ellipses, so the speed of the planet in its orbit varies, and therefore the apparent speed of the Sun along the ecliptic also varies throughout the planet's year.
     /// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun. For a circular orbit, the mean anomaly and the true anomaly are the same.
     /// The difference between the true anomaly and the mean anomaly is called the Equation of Center.
     /// - Parameter t: Julian century as a Double
@@ -192,7 +192,7 @@ struct Astrocalculations {
 
     /// Calculate the exact current longitude of the Sun for a given date
     ///
-    /// This is an original algorithm that I based on a given date and the equation of time. This is partially empirical and uses the difference between local and GMT time to determine roughly where noon is.
+    /// This is an original algorithm that I created to calculate the subsolar point longitude, based on a given date and the equation of time. This is partially empirical and uses the difference between local and GMT time to determine roughly where noon is.
     /// The algorithm then corrects this based on the equation of time and whether the Sun is east or west of the International Date Line.
     /// - Parameter date: A date as a Date type
     /// - Returns: The subsolar longitude as a Double
