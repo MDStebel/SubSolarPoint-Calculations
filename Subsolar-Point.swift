@@ -135,7 +135,7 @@ struct Astrocalculations {
         let meanLongitudeSunRadians = geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Constants.degreesToRadians
         let meanAnomalySunRadians = meanAnomaly(t: t) * Constants.degreesToRadians
         let eccentricity = orbitEccentricityOfEarth(t: t)
-        let obliquity = 0.0430264916545165 // Earth's axial tilt
+        let obliquity = 0.0430264916545165 
         
         let term1 = obliquity * sin(2 * meanLongitudeSunRadians)
         let term2 = 2 * eccentricity * sin(meanAnomalySunRadians)
