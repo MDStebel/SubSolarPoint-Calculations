@@ -1,8 +1,8 @@
 # Astronomical Algorithms
-Astronomical computations in Swift and Python.
+## Astronomical computations in Swift and Python.
 
-## Subsolar-Point
-Computes the subsolar point at the current time.
+### Subsolar-Point
+Computes the position of the subsolar point in real current time.
 
 The subsolar point is the location on a planet or celestial body’s surface where the sun is perceived to be directly overhead at a given moment. This means the sun’s rays are hitting the surface at a 90-degree angle, and it is the point on the surface that receives the most direct sunlight. For Earth, the subsolar point moves across the surface as the Earth rotates and orbits the sun, and it is always located somewhere between the Tropic of Cancer and the Tropic of Capricorn, depending on the time of year.
 
