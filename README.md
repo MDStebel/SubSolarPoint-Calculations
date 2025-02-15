@@ -1,5 +1,5 @@
 # Astronomical Algorithms
-## Astronomical computations in Swift and Python.
+## Astronomical computations in Swift and Python
 
 ### Subsolar-Point
 Computes the position of the subsolar point in real current time.
