@@ -77,28 +77,28 @@ struct Astrocalculations {
     /// - Returns: Julian date as a Double
     static func jDFromDate(date: Date) -> Double {
         let jD = Constants.julianDateForJan011970At0000GMT + date.timeIntervalSince1970 / Double(Constants.numberOfSecondsInADay)
-
+        
         return jD
     }
-
+    
     /// Convert a given Julian date to a Gregorian date
     /// - Parameter jd: Julian date as a Double
     /// - Returns: Standard date as a NSDate
     static func dateFromJd(jd: Double) -> NSDate {
         let gD = NSDate(timeIntervalSince1970: (jd - Constants.julianDateForJan011970At0000GMT) * Double(Constants.numberOfSecondsInADay))
-
+        
         return gD
     }
-
+    
     /// Calculate the Julian century since Jan-1-2000
     /// - Parameter date: Gregorian date as a Date
     /// - Returns: Julian century as a Double
     static func julianCenturySinceJan2000(date: Date) -> Double {
         let jc = (jDFromDate(date: date) - 2451545) / Double(Constants.numberOfDaysInACentury)
-
+        
         return jc
     }
-
+    
     /// Calculate the orbital eccentricity of the Earth
     ///
     /// The orbital eccentricity of an astronomical object is a dimensionless parameter that determines the amount by which its orbit around another body deviates from a perfect circle.
@@ -106,10 +106,10 @@ struct Astrocalculations {
     /// - Returns: Eccentricity as a Double
     static func orbitEccentricityOfEarth(t: Double) -> Double {
         let ecc = 0.016708634 - t * (0.000042037 + 0.0000001267 * t)
-
+        
         return ecc
     }
-
+    
     /// Calculate the Mean Anomaly of the Sun for a given date
     ///
     /// The mean anomaly is the angle between lines drawn from the Sun to the perihelion and to a point moving in the orbit at a uniform rate corresponding to the period of revolution of the planet.
@@ -120,10 +120,10 @@ struct Astrocalculations {
     /// - Returns: The mean anomaly as a Double
     static func meanAnomaly(t: Double) -> Double {
         let m = 357.52911 + t * 35999.05029 - t * 0.0001537
-
+        
         return m
     }
-
+    
     /// Calculate the Equation of Time for a given date
     ///
     /// The Equation of Time (EOT) is a formula used to convert between solar time and clock time, accounting for the Earth’s elliptical orbit around the Sun and its axial tilt.
@@ -135,7 +135,7 @@ struct Astrocalculations {
         let meanLongitudeSunRadians = geometricMeanLongitudeOfSunAtCurrentTime(t: t) * Constants.degreesToRadians
         let meanAnomalySunRadians = meanAnomaly(t: t) * Constants.degreesToRadians
         let eccentricity = orbitEccentricityOfEarth(t: t)
-        let obliquity = 0.0430264916545165 
+        let obliquity = 0.0430264916545165
         
         let term1 = obliquity * sin(2 * meanLongitudeSunRadians)
         let term2 = 2 * eccentricity * sin(meanAnomalySunRadians)
@@ -147,21 +147,21 @@ struct Astrocalculations {
         
         return equationOfTime
     }
-
+    
     /// Calculate the Sun Equation of Center
     ///
     /// The orbits of the planets are not perfect circles, but rather ellipses, so the speed of the planet in its orbit varies, and therefore the apparent speed of the Sun along the ecliptic also varies throughout the planet's year.
     /// The true anomaly is the angular distance of the planet from the perihelion of the planet, as seen from the Sun. For a circular orbit, the mean anomaly and the true anomaly are the same.
     /// The difference between the true anomaly and the mean anomaly is called the Equation of Center.
     /// - Parameter t: Julian century as a Double
-        /// - Returns: The Sun equation of Center in radians
+    /// - Returns: The Sun equation of Center in radians
     static func sunEquationOfCenter(t: Double) -> Double {
         let m = meanAnomaly(t: t)
         let sEOC = sin(m * Double(Constants.degreesToRadians)) * (1.914602 - t * (0.004817 + 0.000014 * t)) + sin(2 * m * Double(Constants.degreesToRadians)) * (0.019993 - 0.000101 * t) + sin(3 * m * Double(Constants.degreesToRadians)) * 0.000289
-
+        
         return sEOC
     }
-
+    
     /// Calculate the Geometric Mean Longitude of the Sun
     ///
     /// The mean longitude of the Sun, corrected for the aberration of light. Mean longitude is the ecliptic longitude at which an orbiting body could be found if its orbit were circular and free of perturbations.
@@ -170,75 +170,61 @@ struct Astrocalculations {
     /// - Returns: The geometric mean longitude in degrees as a Double
     static func geometricMeanLongitudeOfSunAtCurrentTime(t: Double) -> Double {
         let sunGeometricMeanLongitude = Double(280.46646 + t * 36000.76983 + t * t * 0.0003032).truncatingRemainder(dividingBy: Constants.threeSixtyDegrees)
-
+        
         return sunGeometricMeanLongitude
     }
-
-    /// Calculate the exact current latitude of the Sun for a given date
+    
+    /// Calculate the exact current latitude of the Sun for a given date and time
     ///
     /// Based on the geometric mean longitude of the Sun.
     /// - Parameter date: A date as a Date type
     /// - Returns: Latitude in degrees as a Double
     static func latitudeOfSun(for date: Date) -> Double {
         let jC = julianCenturySinceJan2000(date: date)
-
+        
         let geomMeanLongitude = geometricMeanLongitudeOfSunAtCurrentTime(t: jC)
         let sunTrueLongitude = geomMeanLongitude + Double(sunEquationOfCenter(t: jC))
         let latitudeOfSun = asin(sin(sunTrueLongitude * Constants.degreesToRadians) * sin(Constants.earthTiltInRadians))
         let sunTrueLatitudeInDegrees = latitudeOfSun * Constants.radiansToDegrees
-
+        
         return sunTrueLatitudeInDegrees
     }
-
-    /// Calculate the exact current longitude of the Sun for a given date
+    
+    /// Calculate the exact current longitude of the Sun for a given date and time
     ///
-    /// This is an original algorithm that I created to calculate the subsolar point longitude, based on a given date and the equation of time. This is partially empirical and uses the difference between local and GMT time to determine roughly where noon is.
-    /// The algorithm then corrects this based on the equation of time and whether the Sun is east or west of the International Date Line.
+    /// This is an original algorithm that I created to calculate the subsolar point longitude, based on a given date and the equation of time.
     /// - Parameter date: A date as a Date type
     /// - Returns: The subsolar longitude as a Double
-    static func subSolarLongitudeOfSunAtCurrentTime(for date: Date) -> Double {
-        var timeCorrection, dayCorrection, lonCorrection: Double
+    static func subSolarLongitudeAtCurrentTimeUTC(for date: Date) -> Double {
+        let utcCalendar = Calendar(identifier: .gregorian)
+        let utcComponents = utcCalendar.dateComponents(in: TimeZone(secondsFromGMT: 0)!, from: date)
 
-        // Time calculations for the current time
-        let eOT = Double(equationOfTime(for: date))
-        let localMins = Double(Calendar.current.component(.minute, from: date))
-        let localHour = Double(Calendar.current.component(.hour, from: date)) + localMins / Constants.numberOfMinutesInAnHour // The current time as a decimal value
-        let secondsFromGMT = Double(TimeZone.current.secondsFromGMT())
-
-        // Correct for time and day relative to GMT and the International Date Line
-        if secondsFromGMT <= 0 {
-            timeCorrection = 1
-            dayCorrection = 0
-        } else {
-            timeCorrection = -1
-            dayCorrection = -Constants.numberOfHoursInADay
+        guard let hour = utcComponents.hour,
+              let minute = utcComponents.minute,
+              let second = utcComponents.second else {
+            return 0.0
         }
 
-        // Calculate current GMT
-        let GMT = (localHour - secondsFromGMT / Constants.numberOfSecondsInAnHour - timeCorrection * Constants.numberOfHoursInADay.truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)).truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
+        // Convert UTC time to decimal hours
+        let utcDecimalHours = Double(hour) + Double(minute) / 60.0 + Double(second) / 3600.0
 
-        // Now, calculate the difference between current GMT and noontime in hours
-        let noonHourDelta = min(Constants.noonTime - GMT - eOT / Constants.numberOfMinutesInAnHour + dayCorrection, 12.0).truncatingRemainder(dividingBy: Constants.numberOfHoursInADay)
+        // Get the Equation of Time in minutes
+        let eotMinutes = equationOfTime(for: date)
+        let eotHours = eotMinutes / 60.0
 
-        // The subsolar longitude is the difference in hours times the number of degrees per hour (360/24 = 15 deg/hr)
-        let subSolarLon = noonHourDelta * Constants.degreesLongitudePerHour
+        // Subsolar longitude with Equation of Time correction
+        var longitude = (12.0 - utcDecimalHours - eotHours) * 15.0
 
-        // Now, determine if we've crossed the international date line. If so, we need to add 180 degrees.
-        if subSolarLon < -Constants.oneEightyDegrees && GMT <= Constants.noonTime {
-            lonCorrection = Constants.oneEightyDegrees
-        } else if subSolarLon <= -Constants.oneEightyDegrees && GMT >= Constants.noonTime {
-            lonCorrection = 0                   //localHour >= GMT ? 0 : Constants.oneEightyDegrees
-        } else if GMT >= Constants.numberOfHoursInADay {
-            lonCorrection = Constants.oneEightyDegrees
-        } else {
-            lonCorrection = 0
+        // Normalize to [-180°, 180°]
+        if longitude > 180 {
+            longitude -= 360
+        } else if longitude < -180 {
+            longitude += 360
         }
 
-        let subSolarLongitudeActual = subSolarLon + lonCorrection
-
-        return subSolarLongitudeActual
+        return longitude
     }
-
+    
     /// Get the subsolar coordinates at the current date and time
     ///
     /// The subsolar point is the position on Earth where the Sun is at the zenith.
@@ -246,11 +232,12 @@ struct Astrocalculations {
     static func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
         let now = Date()
         let lat = Float(latitudeOfSun(for: now))
-        let lon = Float(subSolarLongitudeOfSunAtCurrentTime(for: now))
-
+        let lon = Float(subSolarLongitudeAtCurrentTimeUTC(for: now))
+                        
         return (lat, lon)
     }
 }
+
 //: ### Run it in a loop
 let secsToDelay: UInt32 = 5
 
