@@ -1,7 +1,7 @@
 //: ## Playground - Compute the Real-Time Subsolar Point Coordinates
 //: ###### Based on the algorithm used in ISS Real-Time Tracker 3D.
 //: ###### Created by Michael Stebel on 02/26/2021.
-//: ###### Copyright © 2021-2024 Michael Stebel Consulting, LLC. All rights reserved.
+//: ###### Copyright © 2021-2025 Michael Stebel Consulting, LLC. All rights reserved.
 import Foundation
 import PlaygroundSupport
 
@@ -206,14 +206,14 @@ struct Astrocalculations {
         }
 
         // Convert UTC time to decimal hours
-        let utcDecimalHours = Double(hour) + Double(minute) / 60.0 + Double(second) / 3600.0
+        let utcDecimalHours = Double(hour) + Double(minute) / Constants.numberOfMinutesInAnHour + Double(second) / Constants.numberOfSecondsInAnHour
 
         // Get the Equation of Time in minutes
         let eotMinutes = equationOfTime(for: date)
-        let eotHours = eotMinutes / 60.0
+        let eotHours = eotMinutes / Constants.numberOfMinutesInAnHour
 
         // Subsolar longitude with Equation of Time correction
-        var longitude = (12.0 - utcDecimalHours - eotHours) * 15.0
+        var longitude = (12.0 - utcDecimalHours - eotHours) * Constants.degreesLongitudePerHour
 
         // Normalize to [-180°, 180°]
         if longitude > 180 {
