@@ -5,7 +5,7 @@
 import Foundation
 import PlaygroundSupport
 
-/// Variables and constants used by this playground
+/// Constants used by this playground
 struct Constants {
     static let coordinatesStringFormat          = "%3d° %02d' %@  %3d° %02d' %@"
     static let degreesLongitudePerHour: Double  = 15
@@ -179,7 +179,7 @@ struct Astrocalculations {
     /// Based on the geometric mean longitude of the Sun.
     /// - Parameter date: A date as a Date type
     /// - Returns: Latitude in degrees as a Double
-    static func latitudeOfSun(for date: Date) -> Double {
+    static func subsolarLatitude(for date: Date) -> Double {
         let jC = julianCenturySinceJan2000(date: date)
         
         let geomMeanLongitude = geometricMeanLongitudeOfSunAtCurrentTime(t: jC)
@@ -231,7 +231,7 @@ struct Astrocalculations {
     /// - Returns: The subsolar coordinates as a tuple of Doubles
     static func getSubSolarCoordinates() -> (latitude: Float, longitude: Float) {
         let now = Date()
-        let lat = Float(latitudeOfSun(for: now))
+        let lat = Float(subsolarLatitude(for: now))
         let lon = Float(subSolarLongitudeAtCurrentTimeUTC(for: now))
                         
         return (lat, lon)
